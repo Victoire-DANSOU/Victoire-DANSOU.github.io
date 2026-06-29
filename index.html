@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victoire DANSOU — Data Scientist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:    #5B4FCF;
+      --accent-lt: #EAE8FA;
+      --accent-md: #7B6FDF;
+      --dark:      #1A1A2E;
+      --mid:       #4A4A68;
+      --muted:     #9090A8;
+      --bg:        #FAFAF8;
+      --bg2:       #F3F3EF;
+      --white:     #FFFFFF;
+      --border:    #E4E4E0;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body:    'Inter', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--dark); line-height: 1.6; font-size: 16px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,250,248,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--dark); text-decoration: none; letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--accent); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul li a { text-decoration: none; color: var(--mid); font-size: 0.875rem; font-weight: 500; transition: color .2s; }
+    nav ul li a:hover { color: var(--accent); }
+
+    /* HERO */
+    #hero {
+      padding: 130px 5% 100px; max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .hero-left { display: flex; flex-direction: column; gap: 0; }
+    .hero-profile { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.4rem; }
+    .hero-photo-wrap {
+      width: 72px; height: 72px; border-radius: 16px;
+      border: 2px solid var(--accent-lt);
+      overflow: hidden; flex-shrink: 0;
+      background: var(--accent-lt);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-photo-wrap img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 14px;
+      display: none; /* caché tant que pas de vraie photo */
+    }
+    .hero-photo-placeholder {
+      font-size: 2rem; line-height: 1;
+      color: var(--accent);
+      /* À supprimer quand tu ajoutes ta vraie photo */
+    }
+    /* ↓ Quand tu auras ta photo, décommente ceci et remplace src */
+    /* .hero-photo-wrap img { display: block; } */
+    /* .hero-photo-placeholder { display: none; } */
+    .hero-name-block {}
+    .hero-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+    .hero-title-small { font-size: 0.82rem; color: var(--accent); font-weight: 500; margin-top: 2px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-lt); color: var(--accent);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 5px 12px; border-radius: 20px;
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; width: fit-content;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)} }
+    h1 { font-family: var(--font-display); font-size: clamp(2rem,3.5vw,2.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; color: var(--dark); margin-bottom: 1rem; }
+    h1 span { color: var(--accent); }
+    .hero-desc { color: var(--mid); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.8rem; max-width: 440px; }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { background: var(--accent); color: #fff; padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: background .2s,transform .15s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { background: var(--accent-md); transform: translateY(-1px); }
+    .btn-ghost { border: 1.5px solid var(--border); color: var(--dark); padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.875rem; transition: border-color .2s,color .2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Terminal */
+    .hero-visual { background: #1A1A2E; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(91,79,207,0.18),0 4px 16px rgba(0,0,0,0.1); }
+    .terminal-bar { background: #252540; padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r{background:#FF5F57}.dot.y{background:#FEBC2E}.dot.g{background:#28C840}
+    .terminal-title { margin: 0 auto; font-size: 0.75rem; color: #666688; font-family: monospace; }
+    .terminal-body { padding: 20px 22px; font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 1.8; }
+    .t-line { display: flex; gap: 10px; }
+    .t-prompt{color:#5B4FCF}.t-cmd{color:#A8D8EA}.t-out{color:#B8E0B8;padding-left:20px}.t-out.accent{color:#D4AAFF}.t-out.muted{color:#666688}
+    .t-cursor { display: inline-block; width: 8px; height: 14px; background: #5B4FCF; margin-left: 2px; animation: blink 1s step-end infinite; vertical-align: middle; }
+    @keyframes blink{50%{opacity:0}}
+
+    /* SECTION TITLES */
+    .section-wrap { padding: 80px 5%; max-width: 1100px; margin: 0 auto; }
+    .section-wrap-full { padding: 80px 5%; background: var(--bg2); }
+    .section-wrap-full .inner { max-width: 1100px; margin: 0 auto; }
+    .section-wrap-dark { padding: 80px 5%; background: var(--dark); }
+    .section-wrap-dark .inner { max-width: 700px; margin: 0 auto; text-align: center; }
+    .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+    h2 { font-family: var(--font-display); font-size: clamp(1.5rem,2.5vw,2rem); font-weight: 700; letter-spacing: -0.8px; color: var(--dark); line-height: 1.2; }
+    .section-sub { color: var(--mid); margin-top: 0.5rem; font-size: 0.95rem; max-width: 520px; }
+    .section-header { margin-bottom: 2.5rem; }
+
+    /* SKILLS */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1.2rem; margin-top: 2rem; }
+    .skill-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; transition: box-shadow .2s,border-color .2s; }
+    .skill-card:hover { box-shadow: 0 8px 24px rgba(91,79,207,0.08); border-color: var(--accent); }
+    .skill-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-lt); display: flex; align-items: center; justify-content: center; margin-bottom: 0.9rem; font-size: 1.1rem; }
+    .skill-card h3 { font-family: var(--font-display); font-size: 0.9rem; font-weight: 600; color: var(--dark); margin-bottom: 0.7rem; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { background: var(--bg2); color: var(--mid); font-size: 0.72rem; font-weight: 500; padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); }
+    .tag.accent-tag { background: var(--accent-lt); color: var(--accent); border-color: transparent; }
+
+    /* PROJETS */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 1.4rem; margin-top: 2rem; }
+
+    /* Card cliquable avec modal */
+    .project-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: box-shadow .25s,transform .2s,border-color .2s;
+    }
+    .project-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(91,79,207,0.12); border-color: var(--accent); }
+    .project-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.9rem; }
+    .project-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--accent-lt); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .project-arrow { color: var(--muted); font-size: 1.1rem; transition: color .2s,transform .2s; }
+    .project-card:hover .project-arrow { color: var(--accent); transform: translate(2px,-2px); }
+    .project-card h3 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem; }
+    .project-card p { color: var(--mid); font-size: 0.84rem; line-height: 1.6; flex: 1; margin-bottom: 1rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .project-tag { font-size: 0.7rem; font-weight: 500; padding: 3px 9px; border-radius: 20px; }
+    .tag-blue{background:#EBF4FF;color:#2563EB}.tag-green{background:#ECFDF5;color:#059669}
+    .tag-purple{background:var(--accent-lt);color:var(--accent)}.tag-orange{background:#FFF7ED;color:#EA580C}
+    .tag-gray{background:var(--bg2);color:var(--mid);border:1px solid var(--border)}
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(26,26,46,0.6); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 18px;
+      max-width: 580px; width: 100%;
+      padding: 2rem; position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+      animation: modalIn .25s ease;
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--bg2); border: none; cursor: pointer;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--mid); transition: background .2s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--accent-lt); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+    .modal h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 0.6rem; }
+    .modal-desc { color: var(--mid); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem; }
+    .modal-stack { margin-bottom: 1.2rem; }
+    .modal-stack-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modal-github {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--dark); color: var(--white);
+      padding: 10px 20px; border-radius: 8px;
+      text-decoration: none; font-size: 0.875rem; font-weight: 500;
+      transition: background .2s;
+    }
+    .modal-github:hover { background: var(--accent); }
+
+    /* TIMELINE */
+    .timeline { margin-top: 2rem; }
+    .tl-item { display: grid; grid-template-columns: 150px 1fr; gap: 2rem; padding: 1.8rem 0; border-bottom: 1px solid var(--border); }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-date { font-size: 0.78rem; color: var(--muted); font-weight: 500; padding-top: 3px; line-height: 1.5; }
+    .tl-content h3 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--dark); margin-bottom: 0.2rem; }
+    .tl-company { color: var(--accent); font-size: 0.82rem; font-weight: 500; margin-bottom: 0.5rem; }
+    .tl-desc { color: var(--mid); font-size: 0.84rem; line-height: 1.7; }
+    .tl-desc ul { padding-left: 1.2rem; margin-top: 0.3rem; }
+    .tl-desc ul li { margin-bottom: 0.25rem; }
+    .tl-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.7rem; }
+
+    /* FORMATION */
+    .education-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 1.2rem; margin-top: 2rem; }
+    .edu-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.3rem; }
+    .edu-year { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .edu-card h3 { font-family: var(--font-display); font-size: 0.9rem; font-weight: 600; color: var(--dark); margin-bottom: 0.2rem; line-height: 1.3; }
+    .edu-school { color: var(--mid); font-size: 0.8rem; line-height: 1.4; }
+    .edu-badge { display: inline-block; background: var(--accent-lt); color: var(--accent); font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 0.4rem; }
+
+    /* CONTACT */
+    .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem; }
+    .contact-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: all .2s; }
+    .contact-link.email { background: var(--accent); color: #fff; }
+    .contact-link.email:hover { background: var(--accent-md); }
+    .contact-link.linkedin,.contact-link.github { background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.12); }
+    .contact-link.linkedin:hover,.contact-link.github:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    footer { background: var(--dark); text-align: center; padding: 20px 5%; border-top: 1px solid rgba(255,255,255,0.06); }
+    footer p { color: #555570; font-size: 0.75rem; }
+
+    /* PHOTO UPLOAD HINT */
+    .photo-hint {
+      font-size: 0.7rem; color: var(--muted);
+      margin-top: 0.3rem; font-style: italic;
+    }
+
+    @media(max-width:768px){
+      #hero{grid-template-columns:1fr;padding-top:90px;gap:2rem}
+      .hero-visual{display:none}
+      .tl-item{grid-template-columns:1fr;gap:0.4rem}
+      nav ul{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Victoire <span>DANSOU</span></a>
+  <ul>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#projets">Projets</a></li>
+    <li><a href="#experiences">Expériences</a></li>
+    <li><a href="#formation">Formation</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-left">
+
+    <!-- BLOC PHOTO + NOM -->
+    <div class="hero-profile">
+      <div class="hero-photo-wrap">
+        <!--
+          ✅ COMMENT AJOUTER TA PHOTO :
+          1. Nomme ta photo : photo.jpg
+          2. Mets-la dans le même dossier que ce fichier HTML
+          3. Remplace la ligne ci-dessous par : <img src="photo.jpg" alt="Victoire DANSOU" />
+          4. Supprime la div hero-photo-placeholder
+        -->
+        <img src="photo.jpg" alt="Victoire DANSOU" onerror="this.style.display='none'; document.getElementById('placeholder').style.display='flex';" style="display:block;" />
+        <div id="placeholder" class="hero-photo-placeholder" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">👩🏾</div>
+      </div>
+      <div class="hero-name-block">
+        <div class="hero-name">Victoire DANSOU</div>
+        <div class="hero-title-small">Data Scientist · Finance & Risk</div>
+        <div class="photo-hint">← Remplacer par ta photo pro</div>
+      </div>
+    </div>
+
+    <div class="hero-eyebrow">Disponible — Stage fin d'études 2026</div>
+    <h1>Data Scientist<br><span>Finance & Risk</span></h1>
+    <p class="hero-desc">
+      Ingénieure en Data Science à l'ENSAI, spécialisée en économie et finance quantitative.
+      Je construis des modèles statistiques et ML appliqués au risque, à l'assurance
+      et à la finance — avec rigueur, curiosité et sens du résultat.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projets" class="btn-primary">Voir mes projets →</a>
+      <a href="#contact" class="btn-ghost">Me contacter</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="terminal-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="terminal-title">credit_risk_model.py</span>
+    </div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-prompt">▶</span><span class="t-cmd">python model.py --dataset german_credit</span></div>
+      <div class="t-line"><span class="t-out muted"># Chargement des données...</span></div>
+      <div class="t-line"><span class="t-out">Dataset : 1000 clients, 20 features</span></div>
+      <div class="t-line"><span class="t-out muted"># Feature engineering (WoE)...</span></div>
+      <div class="t-line"><span class="t-out accent">statut_compte   IV = 0.666 ✓ Fort</span></div>
+      <div class="t-line"><span class="t-out accent">historique      IV = 0.293 ✓ Moyen</span></div>
+      <div class="t-line"><span class="t-out muted"># Entraînement XGBoost...</span></div>
+      <div class="t-line"><span class="t-out">AUC-ROC  : 0.812</span></div>
+      <div class="t-line"><span class="t-out">Gini     : 0.624</span></div>
+      <div class="t-line"><span class="t-out">KS stat  : 0.441</span></div>
+      <div class="t-line"><span class="t-prompt">▶</span><span class="t-cmd"><span class="t-cursor"></span></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPÉTENCES -->
+<div id="competences" class="section-wrap-full">
+  <div class="inner">
+    <div class="section-header">
+      <div class="section-label">Compétences</div>
+      <h2>Stack technique</h2>
+      <p class="section-sub">Triple compétence statistique, informatique et finance quantitative — ADN de la formation ENSAI.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">🐍</div>
+        <h3>Langages</h3>
+        <div class="skill-tags">
+          <span class="tag accent-tag">Python</span><span class="tag accent-tag">R</span>
+          <span class="tag accent-tag">SQL</span><span class="tag">SAS</span><span class="tag">Stata</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🤖</div>
+        <h3>Machine Learning</h3>
+        <div class="skill-tags">
+          <span class="tag accent-tag">XGBoost</span><span class="tag accent-tag">Random Forest</span>
+          <span class="tag">Régression logistique</span><span class="tag">Clustering</span><span class="tag">NLP</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📊</div>
+        <h3>Statistiques & Finance</h3>
+        <div class="skill-tags">
+          <span class="tag accent-tag">Modèles de survie (Cox)</span>
+          <span class="tag accent-tag">Scoring crédit</span>
+          <span class="tag">Kaplan-Meier</span><span class="tag">Fine-Gray</span><span class="tag">Économétrie</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">⚙️</div>
+        <h3>Outils & Plateformes</h3>
+        <div class="skill-tags">
+          <span class="tag accent-tag">Dataiku</span><span class="tag accent-tag">PySpark</span>
+          <span class="tag">Git / GitHub</span><span class="tag">Jupyter</span><span class="tag">LaTeX / Typst</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJETS -->
+<div id="projets" class="section-wrap">
+  <div class="section-header">
+    <div class="section-label">Projets</div>
+    <h2>Ce que je construis</h2>
+    <p class="section-sub">Projets personnels et académiques — tous reproductibles et documentés sur GitHub.</p>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card" onclick="openModal('credit')">
+      <div class="project-header">
+        <div class="project-icon">💳</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>Modélisation du risque crédit (PD)</h3>
+      <p>Scoring crédit sur le German Credit Dataset — WoE, XGBoost, métriques financières (Gini, KS, AUC-ROC) et interprétabilité SHAP.</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">Python</span>
+        <span class="project-tag tag-blue">XGBoost</span>
+        <span class="project-tag tag-green">Risk Management</span>
+      </div>
+    </div>
+
+    <div class="project-card" onclick="openModal('baac')">
+      <div class="project-header">
+        <div class="project-icon">🚗</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>Analyse des accidents de la route</h3>
+      <p>Pipeline data complet sur la base BAAC (2015–2024). Random Forest pour identifier les facteurs de gravité des accidents en France.</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">Python</span>
+        <span class="project-tag tag-blue">Random Forest</span>
+        <span class="project-tag tag-orange">API data.gouv.fr</span>
+      </div>
+    </div>
+
+    <div class="project-card" onclick="openModal('fueltrack')">
+      <div class="project-header">
+        <div class="project-icon">⛽</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>FuelTrack — Prix des carburants</h3>
+      <p>Application web pour analyser les prix des carburants en France. Récupération, traitement et mise en base des données des stations-service.</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">Python</span>
+        <span class="project-tag tag-blue">Data viz</span>
+        <span class="project-tag tag-gray">ENSAI 2A</span>
+      </div>
+    </div>
+
+    <div class="project-card" onclick="openModal('snds')">
+      <div class="project-header">
+        <div class="project-icon">🏥</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>Risque de cancer post-transplantation rénale</h3>
+      <p>Analyse de survie sur données SNDS — Kaplan-Meier, Cox cause-spécifique et Fine-Gray sur 15 000+ patients transplantés (2017–2022).</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">R</span>
+        <span class="project-tag tag-green">Survie (Cox)</span>
+        <span class="project-tag tag-blue">Fine-Gray</span>
+      </div>
+    </div>
+
+    <div class="project-card" onclick="openModal('qv')">
+      <div class="project-header">
+        <div class="project-icon">📈</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>Qualité de vie & addictions chez les jeunes</h3>
+      <p>Étude statistique sur les liens entre qualité de vie et consommations (tabac, alcool, jeux) chez les 18 ans en France. EDA, ACM et tests sous R.</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">R</span>
+        <span class="project-tag tag-blue">ACM</span>
+        <span class="project-tag tag-orange">Statistiques</span>
+      </div>
+    </div>
+
+    <div class="project-card" onclick="openModal('mpg')">
+      <div class="project-header">
+        <div class="project-icon">🚙</div>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3>Prédiction de la consommation automobile</h3>
+      <p>Régression linéaire multiple pour prédire la consommation (miles/gallon) selon les caractéristiques techniques d'un véhicule. Sous SAS.</p>
+      <div class="project-tags">
+        <span class="project-tag tag-purple">SAS</span>
+        <span class="project-tag tag-blue">Régression linéaire</span>
+        <span class="project-tag tag-gray">Licence 3</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS PROJETS -->
+<div class="modal-overlay" id="modal-credit" onclick="closeModal(event,'credit')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('credit')">✕</button>
+    <div class="modal-icon">💳</div>
+    <h3>Modélisation du risque crédit (PD)</h3>
+    <p class="modal-desc">
+      Projet complet de scoring crédit sur le German Credit Dataset (UCI — 1 000 clients, 20 variables).
+      L'objectif est de prédire la probabilité de défaut (PD) d'un client bancaire.<br><br>
+      <strong>Étapes :</strong> analyse exploratoire (EDA), feature engineering par Weight of Evidence (WoE) et Information Value (IV),
+      traitement des outliers par winsorizing, entraînement de 3 modèles (Régression Logistique, Random Forest, XGBoost),
+      évaluation par métriques financières standard (Gini, KS statistic, AUC-ROC) et interprétabilité par SHAP values.
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">Python</span><span class="tag">pandas</span><span class="tag">scikit-learn</span>
+        <span class="tag">XGBoost</span><span class="tag">SHAP</span><span class="tag">matplotlib</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU/credit_risk_modeling_VictoireD" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-baac" onclick="closeModal(event,'baac')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('baac')">✕</button>
+    <div class="modal-icon">🚗</div>
+    <h3>Analyse des accidents de la route — Base BAAC</h3>
+    <p class="modal-desc">
+      Projet Python réalisé à l'ENSAI sur les données d'accidentologie françaises (BAAC 2015–2024)
+      récupérées via l'API data.gouv.fr.<br><br>
+      Pipeline complet : collecte API, nettoyage, analyse exploratoire, gestion du déséquilibre de classes,
+      modélisation Random Forest pour identifier les facteurs de gravité des accidents.
+      Livrable : notebook Jupyter documenté, README, requirements.txt et présentation jury 10 min.
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">Python</span><span class="tag">API REST</span>
+        <span class="tag">Random Forest</span><span class="tag">scikit-learn</span><span class="tag">pandas</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU/Projet-python-pour-la-data-science" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-fueltrack" onclick="closeModal(event,'fueltrack')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('fueltrack')">✕</button>
+    <div class="modal-icon">⛽</div>
+    <h3>FuelTrack — Prix des carburants en France</h3>
+    <p class="modal-desc">
+      Application développée dans le cadre du projet informatique de 2ème année à l'ENSAI.
+      Récupération, traitement et mise en base de données des informations sur les stations-service en France,
+      avec visualisation interactive des prix des carburants.
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">Python</span><span class="tag">Base de données</span><span class="tag">Data viz</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU/Projet-Info-2A" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-snds" onclick="closeModal(event,'snds')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('snds')">✕</button>
+    <div class="modal-icon">🏥</div>
+    <h3>Risque de cancer post-transplantation rénale</h3>
+    <p class="modal-desc">
+      Projet biostatistique sur données SNDS (2017–2022) — analyse du risque de cancer chez
+      plus de 15 000 patients transplantés rénaux comparés à la population générale.<br><br>
+      Méthodes : estimateur de Kaplan-Meier, modèle de Cox cause-spécifique,
+      modèle de Fine-Gray pour risques compétitifs. Présentation orale devant jury.
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">R</span><span class="tag">Kaplan-Meier</span>
+        <span class="tag">Cox</span><span class="tag">Fine-Gray</span><span class="tag">SNDS</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-qv" onclick="closeModal(event,'qv')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('qv')">✕</button>
+    <div class="modal-icon">📈</div>
+    <h3>Qualité de vie & addictions chez les jeunes</h3>
+    <p class="modal-desc">
+      Projet statistique de 1ère année ENSAI. Étude des liens entre qualité de vie
+      et consommations (tabac, alcool, drogues, jeux) chez les jeunes de 18 ans en France.<br><br>
+      Nettoyage et structuration sous R, analyses exploratoires univariées et bivariées,
+      Analyse des Correspondances Multiples (ACM).
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">R</span><span class="tag">ACM</span>
+        <span class="tag">EDA</span><span class="tag">ggplot2</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mpg" onclick="closeModal(event,'mpg')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn('mpg')">✕</button>
+    <div class="modal-icon">🚙</div>
+    <h3>Prédiction de la consommation automobile</h3>
+    <p class="modal-desc">
+      Projet de licence 3 (Université de Lille). Construction d'un modèle de régression linéaire multiple
+      sous SAS pour prédire les miles par gallon d'un véhicule selon ses caractéristiques techniques.
+    </p>
+    <div class="modal-stack">
+      <div class="modal-stack-label">Stack technique</div>
+      <div class="modal-tags">
+        <span class="tag accent-tag">SAS</span><span class="tag">Régression linéaire</span><span class="tag">Statistiques</span>
+      </div>
+    </div>
+    <a href="https://github.com/Victoire-DANSOU/Projet_SAS_Licence3" target="_blank" class="modal-github">⌥ Voir sur GitHub →</a>
+  </div>
+</div>
+
+<!-- EXPÉRIENCES -->
+<div id="experiences" class="section-wrap-full">
+  <div class="inner">
+    <div class="section-header">
+      <div class="section-label">Expériences</div>
+      <h2>Parcours professionnel</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Avr – Août 2025<br>4 mois · Stage</div>
+        <div class="tl-content">
+          <h3>Chargée d'études — Data Science</h3>
+          <div class="tl-company">Groupama Loire-Bretagne</div>
+          <div class="tl-desc">
+            <ul>
+              <li>Construction d'un pipeline PySpark sur Dataiku pour analyser les trajectoires des nouveaux clients sur 6 ans (panel longitudinal).</li>
+              <li>Modélisation de la résiliation, sinistralité et transitions d'équipement par ancienneté client.</li>
+              <li>Modèle de survie de Cox pour le rapport ENSAI et enrichissement géographique (CP → INSEE).</li>
+            </ul>
+          </div>
+          <div class="tl-badges">
+            <span class="tag accent-tag">PySpark</span><span class="tag accent-tag">Dataiku</span>
+            <span class="tag">Cox</span><span class="tag">Assurance</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Avr – Juin 2025<br>3 mois</div>
+        <div class="tl-content">
+          <h3>Assistante de recherche</h3>
+          <div class="tl-company">Université Paris Dauphine-PSL</div>
+          <div class="tl-desc">Collecte terrain auprès de ~500 lycéens de terminale dans le cadre d'une étude sur l'égalité des chances dans l'orientation. Compilation et traitement des données sous Stata.</div>
+          <div class="tl-badges"><span class="tag">Stata</span><span class="tag">Recherche</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMATION -->
+<div id="formation" class="section-wrap">
+  <div class="section-header">
+    <div class="section-label">Formation</div>
+    <h2>Parcours académique</h2>
+  </div>
+  <div class="education-grid">
+    <div class="edu-card">
+      <div class="edu-year">2024 – 2027 (en cours)</div>
+      <h3>Diplôme d'ingénieure en Data Science</h3>
+      <div class="edu-school">ENSAI — Bruz, France</div>
+      <span class="edu-badge">Data Science · Économie & Finance</span>
+    </div>
+    <div class="edu-card">
+      <div class="edu-year">2023 – 2024</div>
+      <h3>Licence Pro — Économie, Statistique et Modélisation</h3>
+      <div class="edu-school">FASEST — Université de Lille</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-year">2019 – 2022</div>
+      <h3>Licence — Planification et Gestion de Projets</h3>
+      <div class="edu-school">ENEAM — Cotonou, Bénin</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="section-wrap-dark">
+  <div class="inner">
+    <div class="section-label" style="color:var(--accent-md)">Contact</div>
+    <h2 style="color:#fff;margin-bottom:.6rem">Parlons de votre projet</h2>
+    <p class="section-sub" style="color:#9090A8;margin:0 auto 0">Je recherche un stage de fin d'études (6 mois, 2026) en data science appliquée à la finance, au risque ou à l'assurance.</p>
+    <div class="contact-links">
+      <a href="mailto:vicky31dansou@gmail.com" class="contact-link email">✉ vicky31dansou@gmail.com</a>
+      <a href="https://www.linkedin.com/in/victoire-dansou-08b784254" target="_blank" class="contact-link linkedin">in LinkedIn</a>
+      <a href="https://github.com/Victoire-DANSOU" target="_blank" class="contact-link github">⌥ GitHub</a>
+    </div>
+  </div>
+</div>
+
+<footer><p>© 2025 Victoire DANSOU · Data Scientist · ENSAI</p></footer>
+
+<script>
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModalBtn(id) {
+    document.getElementById('modal-' + id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeModal(e, id) {
+    if (e.target === document.getElementById('modal-' + id)) {
+      closeModalBtn(id);
+    }
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(function(m) {
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+  });
+</script>
+</body>
+</html>
